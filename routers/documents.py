@@ -21,7 +21,7 @@ async def upload_files(
 ) -> EmptyResponseDTO:
     try:
         for file in files:
-            file_path = FileService.upload_file(file)
+            _ = FileService.upload_file(file)
             proceess_document_pipeline.handle(session, file)
 
         response.status_code = 201

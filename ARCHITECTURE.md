@@ -85,6 +85,7 @@
 Processes uploaded documents through sequential handlers:
 
 1. **SaveToSQLHandler**
+   - Supposed to keep track of files uploaded in disk and chroma to give user the CRUD ability
    - Saves document metadata (filename, URL, timestamp) to SQLite
    - Assigns unique document ID
    - Updates context with `id`, `url`, and `file_path`
@@ -138,7 +139,7 @@ Executes retrieval-augmented generation with validation:
    - **LLM Provider**: OpenRouter API (flexible model selection)
 
 5. **ValidationHandler** (Anti-Hallucination Node)
-   - **Threshold**: 0.35 (cosine similarity)
+   - **Threshold**: 0.35 (cosine similarity) This might be better around 0.5 but for the test purposes i kept it at 0.35
    - **Process**:
      1. Splits LLM answer into sentences
      2. Generates embeddings for answer sentences and retrieved chunks
@@ -175,14 +176,15 @@ Executes retrieval-augmented generation with validation:
 ```python
 engine = create_engine("sqlite:///./db.sqlite3")
 ```
-- **Choice**: SQLite for simplicity in development
+- **Choice**: SQLite for simplicity in development and testing this project. If it was a real world project i would choose mongo or postgres based on whether how much data we will be dealing with.
 - **Production Consideration**: Migrate to PostgreSQL for concurrent writes
 
 **Chroma Client**:
 ```python
 client = chromadb.PersistentClient(path="./chroma_db")
 ```
-- **Choice**: Persistent storage (disk-based) for durability
+- **Choice**: Persistent storage (disk-based) for durability.
+- **Why Not FIASS**: In this particular project for the simplicity.But if it was a real world project based on how much performance and simplicity trade offs we can accept as the team and company i would choose between FIASS and Chroma. 
 - **Configuration**: Telemetry disabled for privacy
 
 **Dependency Injection**:
